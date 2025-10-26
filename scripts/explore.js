@@ -21,7 +21,7 @@ function displayMountains(mountains) {
 
   mountains.forEach(mountain => {
     const mountainLink = document.createElement("a");
-    mountainLink.href = `mountain.html?mountain-id=${mountain.id}`;
+    mountainLink.href = `mountains.html?mountain-id=${mountain.id}`;
     mountainLink.classList.add("mountain-item");
 
     mountainLink.innerHTML = `
