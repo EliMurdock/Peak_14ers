@@ -1,0 +1,25 @@
+/* ============================================================
+   FOOTER STYLES
+   ============================================================ */
+
+footer {
+    background-color: var(--color-footer);
+    color: #ddd;
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+footer p {
+    margin-bottom: 0.5rem;
+}
+
+.footer-nav a {
+    color: var(--color-link);
+    margin: 0 0.4rem;
+}
+
+.footer-nav a:hover {
+    color: var(--color-link-hover);
+    text-decoration: underline;
+}

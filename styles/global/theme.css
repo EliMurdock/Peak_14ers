@@ -1,0 +1,67 @@
+/* ============================================================
+   Peak 14ers - Stylesheet
+   Theme: Grays with Forest Green Accents
+   Author: Eli Murdock
+   Date: 2025
+   ============================================================ */
+
+
+/* ============================================================
+   GLOBAL THEME STYLES (Colors, Fonts, Utilities)
+   ============================================================ */
+
+:root {
+    --color-bg: #f5f5f5;           /* Light gray background */
+    --color-text: #333333;         /* Dark gray text */
+    --color-header: #2e4f3e;       /* Forest green for header/nav */
+    --color-accent: #4f7851;       /* Medium forest green accent */
+    --color-footer: #222222;       /* Dark gray footer background */
+    --color-link: #4f7851;         /* Accent green for links */
+    --color-link-hover: #699f6a;   /* Lighter green on hover */
+
+    --font-body: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    --font-heading: "Roboto", "Helvetica Neue", sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: var(--font-heading);
+    color: var(--color-header);
+}
+
+a {
+    color: var(--color-link);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: var(--color-link-hover);
+}
+
+.button {
+    display: inline-block;
+    background-color: var(--color-accent);
+    color: white;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.button:hover {
+    background-color: var(--color-link-hover);
+    transform: scale(1.05);
+}
