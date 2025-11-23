@@ -8,27 +8,22 @@
     <link rel="stylesheet" href="styles/index.css">
 </head>
 <body>
-
-    <!-- ===== HEADER / NAVIGATION ===== -->
-    <header>
-        <div class="logo">
-            <!-- TODO: Add actual logo image here -->
-            <img src="images/logo-placeholder.png" alt="Peak 14ers Logo" width="60" height="60">
-            <h1>Peak 14ers</h1>
-        </div>
-
-        <nav>
-            <ul>
-                <!-- TODO: Update file paths when pages are created -->
-                <li><a href="index.html">Home</a></li>
-                <li><a href="explore.html">Explore 14ers</a></li>
-                <li><a href="mountain-details.html">Mountain Details</a></li>
-                <li><a href="my-hikes.html">My Hikes</a></li>
-                <li><a href="submit-trail.html">Submit a Trail</a></li>
-                <li><a href="resources.html">Resources</a></li>
-            </ul>
-        </nav>
-    </header>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="logo">
+      <img src="data/mountain.png" alt="Peak 14ers Logo" width="55" height="55">
+      <h1>Peak 14ers</h1> 
+    </div>
+    <nav class="nav-bar">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="explore.html">Explore</a></li>
+        <li><a href="my-hikes.html" class="active">My Hikes</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
 
 
     <!-- ===== MAIN CONTENT ===== -->
@@ -37,7 +32,7 @@
         <!-- === HERO SECTION === -->
         <!-- TODO: Replace hero image with actual mountain image -->
         <section class="hero">
-            <img src="images/hero-mountain-placeholder.jpg" alt="Mountain Landscape" class="hero-image">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Mt._Elbert.jpg" alt="Mountain Landscape" class="hero-image">
 
             <div class="hero-text">
                 <h2>Mount Elbert</h2>
@@ -80,17 +75,10 @@
     </main>
 
 
-    <!-- ===== FOOTER ===== -->
-    <footer>
-        <p>&copy; 2025 Peak 14ers | Designed by enthusiasts</p>
-        <nav class="footer-nav">
-            <a href="index.html">Home</a> |
-            <a href="explore.html">Explore</a> |
-            <a href="my-hikes.html">My Hikes</a> |
-            <a href="submit-trail.html">Submit</a> |
-            <a href="resources.html">Resources</a>
-        </nav>
-    </footer>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>&copy; 2025 Peak 14ers | Designed by enthusiasts</p>
+  </footer>
 
 </body>
 </html>
