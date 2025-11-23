@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Hikes | Peak 14ers</title>
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/my-hikes.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="logo">
+      <img src="data/mountain.png" alt="Peak 14ers Logo" width="55" height="55">
+      <h1>Peak 14ers</h1> 
+    </div>
+    <nav class="nav-bar">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="explore.html">Explore</a></li>
+        <li><a href="my-hikes.html" class="active">My Hikes</a></li>
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main -->
+  <main>
+    <section id="empty-hikes" class="empty-hikes">
+      <h2>Explore hikes to get started!</h2>
+      <a href="explore.html" class="btn">Let's Go →</a>
+    </section>
+
+    <section id="hike-list-section" class="hike-list-section hidden">
+      <h1>My Hikes</h1>
+      <div id="hike-list" class="hike-list"></div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p>&copy; 2025 Peak 14ers | Designed by enthusiasts</p>
+  </footer>
+
+  <script src="js/log.js"></script>
+</body>
+</html>

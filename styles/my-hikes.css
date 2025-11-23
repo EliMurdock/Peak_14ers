@@ -1,0 +1,60 @@
+/* log.css */
+/* Styles unique to the My Hikes page */
+
+/* ---------- Layout and Empty State ---------- */
+.empty-hikes {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.empty-hikes h2 {
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+/* Hide helper */
+.hidden {
+  display: none;
+}
+
+/* ---------- Hike List ---------- */
+.hike-list-section {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.hike-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.hike-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.hike-info h3 {
+  color: #1f3b2f; /* forest green accent */
+  margin: 0;
+}
+
+.status {
+  font-weight: bold;
+}
+
+.status.want-to-hike {
+  color: #316b45;
+}
+
+.status.completed {
+  color: #2d2d2d;
+  text-decoration: underline;
+}
