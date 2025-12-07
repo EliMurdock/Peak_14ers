@@ -20,41 +20,28 @@
 /* ---------- Hike List ---------- */
 .hike-list-section {
   max-width: 800px;
-  margin: 2rem auto;
+  margin: 1rem auto;
   padding: 1rem;
+  text-align: center;
 }
 
-.hike-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
+.tiny-icon {
+  width: 6rem;
+  height: 4rem;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
-.hike-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #f2f2f2;
-  border: 1px solid #ccc;
-  padding: 1rem 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+.hikes-table {
+  margin-top: 1rem;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.hike-info h3 {
-  color: #1f3b2f; /* forest green accent */
-  margin: 0;
+.hikes-table th, .hikes-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
 }
 
-.status {
-  font-weight: bold;
-}
-
-.status.want-to-hike {
-  color: #316b45;
-}
-
-.status.completed {
-  color: #2d2d2d;
-  text-decoration: underline;
-}
+.icon-cell { width: 6rem; }

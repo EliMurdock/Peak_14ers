@@ -65,3 +65,41 @@
 .btn:hover {
   background-color: #2d5945;
 }
+
+/* --- Header layout for title + button --- */
+.mountain-subheader {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
+}
+
+.mountain-title {
+  grid-column: 2;
+}
+
+.hike-btn {
+  margin-right: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #1f3b2f;
+  background: white;
+  cursor: pointer;
+}
+
+.hike-btn.added {
+  background: #dfeee6;
+  border-color: #2d5945;
+}
+
+.hiker-gif {
+  width: 28px;
+  height: auto;
+  display: none; /* hidden by default, shown on hover */
+}
+
+.hike-btn:hover .hiker-gif {
+  display: inline-block;
+}
