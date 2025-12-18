@@ -1,165 +1,92 @@
-// mountains.js
+// mountains.js — concise loader + wiki fetch + minimal rendering
+import { getEntry, addOrUpdateEntry, setComment } from './user-data.js';
+const MOUNTAINS_URL = 'data/fourteeners.json';
 
-const MOUNTAINS_URL = "data/fourteeners.json";
-
-/**
- * Load mountain details based on URL param
- */
-/**
- * Load mountain details based on URL param
- */
-async function loadMountainDetails() {
-  const params = new URLSearchParams(window.location.search);
-  const mountainNameParam = params.get("mountain-name");
-
-  if (!mountainNameParam) {
-    document.getElementById("mountain-details").innerHTML =
-      "<p>Mountain name not found in URL.</p>";
-    return;
-  }
-
-  const mountainName = decodeURIComponent(mountainNameParam).toLowerCase();
-
+async function fetchWiki(endpoint, title) {
   try {
-    // Load local JSON for basic info
-    const response = await fetch(MOUNTAINS_URL);
-    if (!response.ok) throw new Error("Could not fetch local mountain data.");
-    const mountains = await response.json();
-
-    const localMountain = mountains.find(
-      m => m.name.toLowerCase() === mountainName
-    );
-
-    if (!localMountain) {
-      document.getElementById("mountain-details").innerHTML =
-        "<p>Mountain not found.</p>";
-      return;
+    if (endpoint) {
+      const url = endpoint.includes('origin=') ? endpoint : endpoint + '&origin=*';
+      const r = await fetch(url); if (!r.ok) return {};
+      const j = await r.json(); const p = j?.query?.pages && j.query.pages[Object.keys(j.query.pages)[0]];
+      const extract = p?.extract || '';
+      return { text: extract, first: extract.split('\n\n')[0] || extract.split('\n')[0] || '', image: p?.original?.source || p?.thumbnail?.source || '' };
     }
-
-    // Attempt to fetch additional data from Wikipedia/Wikidata
-    let details = {};
-    try {
-      details = await fetchMountainDetails(localMountain.name);
-    } catch (err) {
-      console.warn("Could not fetch Wikipedia data for", localMountain.name, err);
-    }
-
-    // Merge local and fetched details
-    const mountain = {
-      ...localMountain,
-      image: details.image || localMountain.image,
-      description: details.summary || localMountain.summary || localMountain.description,
-      prominence: details.prominence || localMountain.prominence,
-      coords: details.coords || localMountain.coords,
-      wikidataId: details.wikidataId || localMountain.wikidataId
-    };
-
-    displayMountainDetails(mountain);
-
-  } catch (error) {
-    console.error("Error loading mountain data:", error);
-    document.getElementById("mountain-details").innerHTML =
-      `<p>Error loading data: ${error.message}</p>`;
-  }
+    const s = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title.replace(/ /g,'_')));
+    if (!s.ok) return {}; const sj = await s.json(); return { text: sj.extract || '', first: (sj.extract || '').split('\n\n')[0] || '', image: sj?.originalimage?.source || sj?.thumbnail?.source || '' };
+  } catch (e) { console.warn('wiki fetch failed', e); return {}; }
 }
 
-/**
- * Render the mountain details in the page
- */
-function displayMountainDetails(mountain) {
-  const container = document.getElementById("mountain-details");
+async function loadMountainDetails() {
+  const params = new URLSearchParams(location.search); const nameParam = params.get('mountain-name');
+  const el = document.getElementById('mountain-details'); if (!nameParam) return el && (el.innerHTML = '<p>Mountain name not found in URL.</p>');
+  const wanted = decodeURIComponent(nameParam).toLowerCase();
+  try {
+    const r = await fetch(MOUNTAINS_URL); if (!r.ok) throw new Error('missing local data');
+    const list = await r.json(); const local = list.find(m => (m.mountain_peak || m.name || '').toLowerCase() === wanted);
+    if (!local) return el && (el.innerHTML = '<p>Mountain not found.</p>');
+    const wiki = await fetchWiki(local.wikipedia_api_endpoint, local.mountain_peak || local.name);
+    const mountain = {
+      name: local.mountain_peak,
+      state: local.state,
+      elevation: local.elevation,
+      prominence: local.prominence,
+      headerImage: local.full_image_url || local.thumbnail_image_url || '',
+      mountain_range: local.mountain_range || '',
+      description: wiki.first || wiki.text || local.summary || local.description || ''
+    };
+    render(mountain);
+  } catch (err) { console.error(err); el && (el.innerHTML = `<p>Error loading data: ${err.message}</p>`); }
+}
 
-  container.innerHTML = `
-    <div class="mountain-header">
-      ${mountain.image ? `<img src="${mountain.image}" alt="${mountain.name}" class="mountain-banner">` : ""}
+function render(m) {
+  const c = document.getElementById('mountain-details'); if (!c) return; const stored = getEntry(m.name);
+  c.innerHTML = `
+    <div class="mountain-header">${m.headerImage ? `<img src="${m.headerImage}" alt="${m.name}" class="mountain-banner">` : ''}
       <div class="mountain-subheader">
-        <div class="mountain-title">
-          <h1>${mountain.name}</h1>
-          <p>${mountain.state || "Unknown location"}</p>
-        </div>
-        <button id="hike-btn" class="hike-btn">
-          <span class="label">Hike it!</span>
-          <img src="data/hiker.gif" alt="hiker" class="hiker-gif">
-        </button>
+        <div class="return-link-grid"><a href="explore.html" class="btn">← Back to Explore</a></div>
+          <div class="mountain-title"><h1>${m.name}</h1><p>${m.state || 'Unknown location'}</p></div>
+          <button id="hike-btn" class="hike-btn"><span class="label">${stored ? `<a href="my-hikes.html">Added to my hikes</a>` : 'Hike it!'}</span><img src="data/hiker.gif" class="hiker-gif" alt="hiker"></button>
       </div>
     </div>
+    <div class="mountain-info-section"><div class="info-box"><h3>Elevation</h3><p>${m.elevation || 'N/A'}</p></div><div class="info-box"><h3>Prominence</h3><p>${m.prominence || 'N/A'}</p></div><div class="info-box"><h3>Mountain Range</h3><p>${m.mountain_range || 'N/A'}</p></div></div>
+    <div class="mountain-description"><h2>About ${m.name}</h2><p>${m.description || 'No description available for this mountain.'}</p>${stored && stored.comment ? `<div class="my-comment"><h3 class="my-note">My note <a href="#" class="edit-note-link">Edit note</a></h3><p>${stored.comment}</p></div>` : ''}</div>`;
 
-    <div class="mountain-info-section">
-      <div class="info-box">
-        <h3>Elevation</h3>
-        <p>${mountain.elevation || "N/A"} ft</p>
-      </div>
-      <div class="info-box">
-        <h3>Difficulty</h3>
-        <p>${mountain.difficulty || "N/A"}</p>
-      </div>
-      <div class="info-box">
-        <h3>Prominence</h3>
-        <p>${mountain.prominence || "N/A"}</p>
-      </div>
-    </div>
-
-    <div class="mountain-description">
-      <h2>About ${mountain.name}</h2>
-      <p>${mountain.description || "No description available for this mountain."}</p>
-    </div>
-
-    <div class="return-link">
-      <a href="explore.html" class="btn">← Back to Explore</a>
-    </div>
-  `;
-
-  // Attach behavior for the Hike it button
-  const hikeBtn = document.getElementById('hike-btn');
-  if (hikeBtn) {
-    // Update state based on cookie
-    if (isMountainAdded(mountain.name)) {
-      hikeBtn.innerHTML = '<span class="label">Added to my hikes</span>';
-      hikeBtn.disabled = true;
-      hikeBtn.classList.add('added');
-    }
-
-    hikeBtn.addEventListener('click', () => {
-      addMountainNameToMyHikes(mountain.name);
-      hikeBtn.innerHTML = '<span class="label">Added to my hikes</span>';
-      hikeBtn.disabled = true;
-      hikeBtn.classList.add('added');
+  const btn = document.getElementById('hike-btn'); if (btn && !getEntry(m.name)) btn.addEventListener('click', () => { const ex = getEntry(m.name); addOrUpdateEntry(m.name, ex ? ex.status : 'planned', ex ? ex.comment : ''); const label = btn.querySelector('.label'); label.innerHTML = `<a href="my-hikes.html">Added to my hikes</a>`; btn.classList.add('added'); });
+  // Note: add/edit note button removed per request; saved comment is displayed below if present
+  // attach handler for inline edit link (if present)
+  const editLink = document.querySelector('.my-comment .edit-note-link');
+  if (editLink) {
+    editLink.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      if (typeof window.openCommentModal === 'function') return window.openCommentModal(m.name, stored ? stored.comment : '');
+      const mm = document.getElementById('mountain-comment-modal'); if (!mm) return; const ta = document.getElementById('mountain-modal-comment'); const save = document.getElementById('mountain-modal-save'); mm.classList.remove('hidden'); mm.setAttribute('aria-hidden','false'); ta.value = stored ? stored.comment : ''; save.dataset.name = m.name;
     });
   }
 }
 
-document.addEventListener("DOMContentLoaded", loadMountainDetails);
+document.addEventListener('DOMContentLoaded', loadMountainDetails);
 
-/* Add mountain to the my-hikes cookie*/
-// New cookie helpers for `my-hikes` cookie (stores array of mountain names)
-function getMyHikesNames() {
-  const cookie = document.cookie.split('; ').find(r => r.startsWith('my-hikes='));
-  if (!cookie) return [];
-  try {
-    return JSON.parse(decodeURIComponent(cookie.split('=')[1]));
-  } catch (e) {
-    return [];
-  }
+// compact modal handling (keeps prior behavior)
+const mountModal = document.getElementById('mountain-comment-modal');
+if (mountModal) {
+  const ta = document.getElementById('mountain-modal-comment'); const save = document.getElementById('mountain-modal-save'); const cancel = document.getElementById('mountain-modal-cancel'); const backdrop = mountModal.querySelector('.modal-backdrop');
+  function openCommentModal(name, prefill) { mountModal.classList.remove('hidden'); mountModal.setAttribute('aria-hidden','false'); ta.value = prefill || ''; save.dataset.name = name; }
+  function closeCommentModal() { mountModal.classList.add('hidden'); mountModal.setAttribute('aria-hidden','true'); save.dataset.name = ''; }
+  // expose for inline edit link handlers
+  window.openCommentModal = openCommentModal;
+  save.addEventListener('click', () => {
+    const name = save.dataset.name; if (!name) return closeCommentModal(); setComment(name, ta.value); closeCommentModal();
+    const area = document.querySelector('.mountain-description .my-comment');
+    if (ta.value) {
+      if (area) {
+        area.innerHTML = `<h3>My note <a href="#" class="edit-note-link">Edit note</a></h3><p>${ta.value}</p>`;
+      } else {
+        const d = document.querySelector('.mountain-description'); const div = document.createElement('div'); div.className = 'my-comment'; div.innerHTML = `<h3>My note <a href="#" class="edit-note-link">Edit note</a></h3><p>${ta.value}</p>`; d.appendChild(div);
+      }
+      // reattach inline edit handler
+      const link = document.querySelector('.my-comment .edit-note-link');
+      if (link) link.addEventListener('click', (ev) => { ev.preventDefault(); if (typeof window.openCommentModal === 'function') return window.openCommentModal(name, ta.value); const mm = document.getElementById('mountain-comment-modal'); if (!mm) return; const t = document.getElementById('mountain-modal-comment'); const s = document.getElementById('mountain-modal-save'); mm.classList.remove('hidden'); mm.setAttribute('aria-hidden','false'); t.value = ta.value; s.dataset.name = name; });
+    } else area && area.remove();
+  });
+  cancel.addEventListener('click', closeCommentModal); if (backdrop) backdrop.addEventListener('click', closeCommentModal);
 }
-
-function setMyHikesNames(names) {
-  const val = encodeURIComponent(JSON.stringify(names));
-  // 30 days
-  document.cookie = `my-hikes=${val}; path=/; max-age=${60 * 60 * 24 * 30}`;
-}
-
-function addMountainNameToMyHikes(name) {
-  if (!name) return;
-  const names = getMyHikesNames();
-  if (!names.includes(name)) {
-    names.push(name);
-    setMyHikesNames(names);
-  }
-}
-
-function isMountainAdded(name) {
-  const names = getMyHikesNames();
-  return names.includes(name);
-}
-
-document.addEventListener("DOMContentLoaded", loadMountainDetails);

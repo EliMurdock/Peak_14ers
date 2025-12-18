@@ -48,8 +48,8 @@
 
 /* ---------- Return Button ---------- */
 .return-link {
-  text-align: center;
-  margin: 3rem 0;
+  /* moved into header grid; keep minimal button styling */
+  margin: 0;
 }
 
 .btn {
@@ -66,19 +66,43 @@
   background-color: #2d5945;
 }
 
+/* Modal styles (same pattern used on my-hikes) */
+.modal.hidden { display: none; }
+.modal { position: fixed; inset: 0; display: grid; place-items: center; z-index: 9999; }
+.modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.45); }
+.modal-content { position: relative; background: white; padding: 1rem; border-radius: 8px; width: min(640px, 95%); box-shadow: 0 6px 18px rgba(0,0,0,0.2); }
+.modal-actions { margin-top: 0.5rem; display: flex; gap: 0.5rem; justify-content: flex-end; }
+.btn.secondary { background: #eee; color: #333; }
+
+/* My comment: heading with inline edit link */
+.my-comment h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1rem 0 0.5rem 0;
+  font-size: 1.7rem;
+}
+.my-comment .edit-note-link {
+  font-size: 0.9rem;
+  color: #2d5945;
+  text-decoration: underline;
+}
+
 /* --- Header layout for title + button --- */
 .mountain-subheader {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr; /* left: back button, center: title, right: action */
+  gap: 0.75rem;
   align-items: center;
 }
 
-.mountain-title {
-  grid-column: 2;
-}
+.return-link-grid { justify-self: center; }
+
+.mountain-title { justify-self: center; }
 
 .hike-btn {
-  margin-right: auto;
+  justify-self: center;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -102,4 +126,16 @@
 
 .hike-btn:hover .hiker-gif {
   display: inline-block;
+}
+
+@media (max-width: 600px) {
+  .btn {
+    font-size: 0;
+    padding: 0.5rem 1rem;
+  }
+
+  .btn::after {
+    font-size: 1rem;
+    content: "← Back";
+  }
 }

@@ -1,3 +1,43 @@
+/* explore Page Styles */
+/* top card */
+.explore-intro h1 {
+  margin-top: 1rem;
+  justify-self: center;
+}
+
+.explore-intro p {
+  margin-top: 0.5rem;
+  justify-self: center;
+  max-width: 700px;
+  text-align: center;
+}
+
+
+/* Controls (sort dropdown) */
+.explore-controls {
+  margin-top: 1rem;
+  justify-self: center;
+  padding: 0 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.explore-controls label { font-weight: 600; }
+.explore-controls select { padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid #ccc; }
+
+.sort-direction {
+  border: 1px solid #ccc;
+  background: white;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.sort-direction[aria-pressed='true'] { background: #f2f8f2; }
+
+
+/* Mountain List */
 .mountain-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -35,5 +75,6 @@
 
 .mountain-info h3 {
   margin: 0.2rem 0;
-  color: #1f3b2f; /* forest green accent */
+  color: #1f3b2f;
 }
+

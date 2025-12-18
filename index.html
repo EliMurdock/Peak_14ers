@@ -7,23 +7,28 @@
     <link rel="icon" href="data/mountain.png">
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/index.css">
+    <script src="scripts/nav.js"></script>
 </head>
 <body>
   <!-- Header -->
   <header class="site-header">
-    <div class="logo">
-      <img src="data/mountain.png" alt="Peak 14ers Logo" width="55" height="55">
-      <h1>Peak 14ers</h1> 
-    </div>
+    <a href="index.html" class="home-link">
+      <div class="logo">
+        <img src="data/mountain.png" alt="Peak 14ers Logo" width="55" height="55">
+        <h1>Peak 14ers</h1>
+      </div>
+    </a>
     <nav class="nav-bar">
       <ul>
-        <li><a href="index.html">Home</a></li>
         <li><a href="explore.html">Explore</a></li>
         <li><a href="my-hikes.html" class="active">My Hikes</a></li>
         <li><a href="resources.html">Resources</a></li>
         <li><a href="about.html">About</a></li>
       </ul>
     </nav>
+    <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+  
+  
   </header>
 
 
@@ -45,29 +50,27 @@
 
 
         <!-- === LOG YOUR HIKES SECTION === -->
-        <!-- TODO: Replace with actual image and text -->
         <section class="log-hikes">
             <div class="section-content">
-                <img src="images/hiking-placeholder.jpg" alt="Hiker on mountain trail" class="section-image">
+                <img src="data/mountain_trail.jpg" alt="Hiker on mountain trail" class="section-image">
 
                 <div class="section-text">
                     <h2>Track Your 14er Progress</h2>
-                    <p>Log the peaks you’ve climbed, record your achievements, and see how close you are to summiting them all. Your progress is saved locally or through your account.</p>
+                    <p>Log the peaks you’ve climbed, record your achievements, and see how close you are to summiting them all. Your progress is saved locally.</p>
                     <a href="explore.html" class="button">Start Exploring</a>
                 </div>
             </div>
         </section>
 
 
-        <!-- === COMMUNITY OR FEATURE SECTION === -->
-        <!-- TODO: Add real content about community, safety tips, or resources -->
+        <!-- === RESOURCE SECTION === -->
         <section class="community">
             <div class="section-content">
-                <img src="images/community-placeholder.jpg" alt="Group of hikers celebrating" class="section-image">
+                <img src="data/hiker_cooking.jpg" alt="Hiker Cooking" class="section-image">
 
                 <div class="section-text">
-                    <h2>Join the 14er Community</h2>
-                    <p>Connect with other adventurers, share your routes, and learn from those who’ve conquered the toughest peaks. Whether you’re a first-timer or a seasoned climber, Peak 14ers helps you plan, log, and celebrate your climbs.</p>
+                    <h2>Resources for Hikers</h2>
+                    <p>View our wide variety of curated resources to help you achieve your goals and hike the 14ers you want to conquer. It's always vital to be prepared and stay safe out there.</p>
                     <a href="resources.html" class="button">Learn More</a>
                 </div>
             </div>

@@ -15,6 +15,7 @@
     --color-text: #333333;         /* Dark gray text */
     --color-header: #2e4f3e;       /* Forest green for header/nav */
     --color-accent: #4f7851;       /* Medium forest green accent */
+    --color-header-light: #2e4f3e82; /* Lighter shade of header for hover states */
     --color-footer: #222222;       /* Dark gray footer background */
     --color-link: #4f7851;         /* Accent green for links */
     --color-link-hover: #699f6a;   /* Lighter green on hover */

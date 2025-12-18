@@ -7,25 +7,29 @@
     <link rel="icon" href="data/mountain.png">
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/resources.css">
-    <script src="scripts/resources.js"></script>
+    <script src="scripts/nav.js"></script>
 </head>
 <body>
     <!-- Header -->
-    <header class="site-header">
-        <div class="logo">
-        <img src="data/mountain.png" alt="Peak 14ers Logo" width="55" height="55">
-        <h1>Peak 14ers</h1> 
-        </div>
-        <nav class="nav-bar">
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="explore.html">Explore</a></li>
-            <li><a href="my-hikes.html" class="active">My Hikes</a></li>
-            <li><a href="resources.html">Resources</a></li>
-            <li><a href="about.html">About</a></li>
-        </ul>
-        </nav>
-    </header>
+        <header class="site-header">
+            <a href="index.html" class="home-link">
+                <div class="logo">
+                    <img src="data/mountain.png" alt="Peak 14ers Logo" width="55" height="55">
+                    <h1>Peak 14ers</h1>
+                </div>
+            </a>
+            <nav class="nav-bar">
+                <ul>
+                    <li><a href="explore.html">Explore</a></li>
+                    <li><a href="my-hikes.html" class="active">My Hikes</a></li>
+                    <li><a href="resources.html">Resources</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+            <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+          
+          
+        </header>
 
     <!-- ===== MAIN CONTENT ===== -->
     <main class="resources">

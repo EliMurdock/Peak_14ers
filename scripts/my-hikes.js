@@ -1,84 +1,122 @@
-// my-hikes.js
-// This page reads the `my-hikes` cookie (list of mountain names) and displays them in a table.
-
+// Simple and clear version of My Hikes page (junior-friendly)
+import { getAllEntries, removeEntry, setComment, setStatus } from './user-data.js';
 const MOUNTAINS_URL = 'data/fourteeners.json';
 
-document.addEventListener('DOMContentLoaded', loadMyHikes);
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('comment-modal');
+  const textarea = document.getElementById('modal-comment');
+  const saveBtn = document.getElementById('modal-save');
+  const cancelBtn = document.getElementById('modal-cancel');
 
-function getMyHikesNames() {
-  const cookie = document.cookie.split('; ').find(r => r.startsWith('my-hikes='));
-  if (!cookie) return [];
-  try {
-    return JSON.parse(decodeURIComponent(cookie.split('=')[1]));
-  } catch (e) {
-    return [];
-  }
-}
+  let editingName = null;
 
+  saveBtn.addEventListener('click', () => {
+    if (!editingName) return;
+    setComment(editingName, textarea.value);
+    modal.classList.add('hidden');
+    render();
+  });
+  cancelBtn.addEventListener('click', () => modal.classList.add('hidden'));
 
+  render();
 
-async function loadMyHikes() {
-  const names = getMyHikesNames();
-  const emptySection = document.getElementById('empty-hikes');
-  const listSection = document.getElementById('hike-list-section');
-  const listContainer = document.getElementById('hike-list');
+  async function render() {
+    const entries = getAllEntries();
+    const empty = document.getElementById('empty-hikes');
+    const section = document.getElementById('hike-list-section');
+    const container = document.getElementById('hike-list');
 
-  // If we have no `my-hikes` cookie
-  if (!names || names.length === 0) {
-    emptySection.classList.remove('hidden');
-    listSection.classList.add('hidden');
-    return;
-  }
-
-  // We have `my-hikes` (array of mountain names). Load full mountain data and render table.
-  try {
-    const resp = await fetch(MOUNTAINS_URL);
-    if (!resp.ok) throw new Error('Could not fetch mountain data');
-    const mountains = await resp.json();
-
-    const selected = mountains.filter(m => names.includes(m.name));
-
-    if (!selected || selected.length === 0) {
-      emptySection.classList.remove('hidden');
-      listSection.classList.add('hidden');
+    if (!entries || entries.length === 0) {
+      empty.classList.remove('hidden');
+      section.classList.add('hidden');
       return;
     }
 
-    emptySection.classList.add('hidden');
-    listSection.classList.remove('hidden');
+    empty.classList.add('hidden');
+    section.classList.remove('hidden');
+    container.innerHTML = '';
 
-    // Build table
-    listContainer.innerHTML = '';
+    const resp = await fetch(MOUNTAINS_URL);
+    const mountains = await resp.json();
+
     const table = document.createElement('table');
-    table.classList.add('hikes-table');
+    table.className = 'hikes-table';
     table.innerHTML = `
       <thead>
         <tr>
-          <th>Mountain</th>
+          <th>Picture</th>
           <th>Name</th>
           <th>State</th>
           <th>Elevation</th>
+          <th>Status</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody></tbody>
     `;
 
     const tbody = table.querySelector('tbody');
-    selected.forEach(m => {
+
+    entries.forEach(entry => {
+      const m = mountains.find(x => x.mountain_peak === entry.name) || {};
       const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="icon-cell">${m.image ? `<img src="${m.image}" alt="${m.name}" class="tiny-icon">` : ''}</td>
-        <td><a href="mountains.html?mountain-name=${encodeURIComponent(m.name)}">${m.name}</a></td>
-        <td>${m.state || ''}</td>
-        <td>${m.elevation ? m.elevation + ' ft' : ''}</td>
-      `;
+
+      // Picture
+      const picTd = document.createElement('td');
+      picTd.className = 'icon-cell';
+      if (m.thumbnail_image_url) picTd.innerHTML = `<img src="${m.thumbnail_image_url}" alt="${entry.name}" class="tiny-icon">`
+      else picTd.innerHTML = `<img src="data/placeholder.jpg" alt="No image" class="tiny-icon">`;
+
+      // Name (link)
+      const nameTd = document.createElement('td');
+      nameTd.innerHTML = `<a href="mountains.html?mountain-name=${encodeURIComponent(entry.name)}">${entry.name}</a>`;
+
+      // State
+      const stateTd = document.createElement('td');
+      stateTd.textContent = m.state || '';
+
+      // Elevation
+      const elevTd = document.createElement('td');
+      elevTd.textContent = m.elevation ? `${m.elevation}` : '';
+
+      // Status select
+      const statusTd = document.createElement('td');
+      const select = document.createElement('select');
+      const optPlanned = new Option('Planned', 'planned');
+      const optCompleted = new Option('Completed', 'completed');
+      select.add(optPlanned);
+      select.add(optCompleted);
+      select.value = entry.status || 'planned';
+      select.addEventListener('change', (e) => { e.stopPropagation(); setStatus(entry.name, select.value); });
+      statusTd.appendChild(select);
+
+      // Actions
+      const actionsTd = document.createElement('td');
+      const removeBtn = document.createElement('button');
+      removeBtn.textContent = 'Remove';
+      removeBtn.className = 'btn small';
+      removeBtn.addEventListener('click', (e) => { e.stopPropagation(); removeEntry(entry.name); tr.remove(); render(); });
+
+      const commentBtn = document.createElement('button');
+      commentBtn.textContent = entry.comment ? 'Edit Comment' : 'Add Comment';
+      commentBtn.className = 'btn small';
+      commentBtn.addEventListener('click', (e) => { e.stopPropagation(); editingName = entry.name; textarea.value = entry.comment || ''; modal.classList.remove('hidden'); });
+
+      actionsTd.appendChild(removeBtn);
+      actionsTd.appendChild(commentBtn);
+
+      tr.appendChild(picTd);
+      tr.appendChild(nameTd);
+      tr.appendChild(stateTd);
+      tr.appendChild(elevTd);
+      tr.appendChild(statusTd);
+      tr.appendChild(actionsTd);
+
+      tr.addEventListener('click', (e) => { if (e.target.closest('button, select, a')) return; window.location = `mountains.html?mountain-name=${encodeURIComponent(entry.name)}`; });
+
       tbody.appendChild(tr);
     });
 
-    listContainer.appendChild(table);
-  } catch (err) {
-    console.error('Error loading hikes:', err);
-    emptySection.classList.remove('hidden');
-    listSection.classList.add('hidden');
+    container.appendChild(table);
   }
-}
+});
